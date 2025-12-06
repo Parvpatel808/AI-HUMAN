@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Human Chat</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { background:black; color:white; text-align:center; font-family:Arial; }
+textarea { width:90%; height:120px; margin-top:20px; padding:10px; border-radius:10px; }
+button { padding:12px 20px; background:cyan; color:black; border:none; border-radius:10px; font-size:18px; margin-top:10px; }
+#output { margin-top:20px; background:#222; padding:20px; border-radius:10px; width:90%; margin-left:auto; margin-right:auto; }
+</style>
+</head>
+<body>
+
+<h1>AI Human Chat</h1>
+<textarea id="text"></textarea>
+<button onclick="ask()">Ask AI</button>
+<div id="output">AI reply here...</div>
+
+<script>
+async function ask() {
+    let input = document.getElementById("text").value;
+    document.getElementById("output").innerHTML = "Thinking...";
+
+    const r = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+        method:"POST",
+        headers:{
+            "Content-Type":"application/json",
+            "Authorization":"Bearer YOUR_API_KEY"
+        },
+        body:JSON.stringify({
+            model:"llama3-8b-8192",
+            messages:[{role:"user", content: input}]
+        })
+    });
+
+    const data = await r.json();
+    document.getElementById("output").innerHTML = data.choices[0].message.content;
+}
+</script>
+
+</body>
+</html>
